@@ -1,0 +1,119 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FindMyThing | Login</title>
+    <link rel="stylesheet" href="{% static 'login.css' %}">
+</head>
+<body>
+
+    <!-- Background Elements -->
+    <div class="bg-circle bg-circle-1"></div>
+    <div class="bg-circle bg-circle-2"></div>
+
+    <main>
+        <div class="login-container">
+            <!-- Left Side - Branding -->
+            <div class="login-brand">
+                <div class="brand-content">
+                    <div class="brand-icon">🔍</div>
+                    <h2>FindMyThing</h2>
+                    <p class="brand-tagline">Find Your Lost Items Fast</p>
+                    
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Smart Search</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Real-time Alerts</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Community Support</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side - Login Form -->
+            <div class="login-form-container">
+                <div class="form-wrapper">
+                    <h1>Welcome Back</h1>
+                    <p class="form-subtitle">Sign in to your account</p>
+
+                    <form action="" method="post" class="login-form">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label for="email">
+                                <span class="label-icon">📧</span>
+                                Email Address
+                            </label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                placeholder="you@example.com" 
+                                required
+                                class="form-input"
+                            >
+                            <div class="input-focus"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">
+                                <span class="label-icon">🔒</span>
+                                Password
+                            </label>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                placeholder="Enter your password" 
+                                required
+                                class="form-input"
+                            >
+                            <div class="input-focus"></div>
+                        </div>
+
+                        <div class="remember-forgot">
+                            <label class="remember-me">
+                                <input type="checkbox" name="remember">
+                                <span>Remember me</span>
+                            </label>
+                            <a href="#" class="forgot-password">Forgot password?</a>
+                        </div>
+
+                        <button type="submit" class="btn-login">
+                            <span>Sign In</span>
+                            <span class="btn-arrow">→</span>
+                        </button>
+                    </form>
+
+                    <div class="divider">
+                        <span>OR</span>
+                    </div>
+
+                     <button class="btn-google">
++                    <a href="{% url 'google_login' %}" class="btn-google">
+                         <span class="google-icon">🔷</span>
+                         Continue with Google
+-                    </button>
++                    </a>
+
+                    <div class="signup-link">
+                        <p>Don't have an account? 
+                            <a href="{% url 'signup' %}">Create one now</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

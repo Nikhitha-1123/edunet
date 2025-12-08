@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>FindMyThing — Sign up</title>
+    <link rel="stylesheet" href="{% static 'signup.css' %}">
+</head>
+<body>
+    <div class="page-bg">
+        <div class="bg-blob blob-1"></div>
+        <div class="bg-blob blob-2"></div>
+        <div class="bg-blob blob-3"></div>
+    </div>
+
+    <main class="container">
+        <aside class="brand-panel" aria-hidden="true">
+            <div class="brand-inner">
+                <div class="brand-badge">🔍</div>
+                <h1 class="brand-title">FindMyThing</h1>
+                <p class="brand-lead">Locate lost items fast — Campus‑wide search, location alerts and an active community.</p>
+
+                <ul class="features">
+                    <li><span class="ficon">📍</span><span>Location based matches</span></li>
+                    <li><span class="ficon">⚡</span><span>Real‑time notifications</span></li>
+                    <li><span class="ficon">🔒</span><span>Privacy first</span></li>
+                </ul>
+
+                <div class="brand-note">Already a member? <a href="{% url 'login' %}">Sign in</a></div>
+            </div>
+        </aside>
+
+        <section class="signup-box" aria-labelledby="signup-heading">
+            <h2 id="signup-heading">Create your account</h2>
+            <p class="subtitle">Join your community — report lost/found items and get alerts.</p>
+
+            <form method="post" class="signup-form" novalidate>
+                {% csrf_token %}
+
+                <div class="row">
+                    <label class="input-group">
+                        <span class="label">Full name</span>
+                        <input name="full_name" type="text" placeholder="Jane Doe" required autocomplete="name">
+                    </label>
+
+                    <label class="input-group">
+                        <span class="label">College / Org</span>
+                        <input name="organization" type="text" placeholder="Your college (optional)" autocomplete="organization">
+                    </label>
+                </div>
+
+                <label class="input-group">
+                    <span class="label">Email</span>
+                    <input name="email" type="email" placeholder="you@school.edu" required autocomplete="email">
+                </label>
+
+                <div class="row">
+                    <label class="input-group">
+                        <span class="label">Password</span>
+                        <input name="password1" type="password" placeholder="Create a password" required autocomplete="new-password" minlength="8">
+                    </label>
+
+                    <label class="input-group">
+                        <span class="label">Confirm</span>
+                        <input name="password2" type="password" placeholder="Repeat password" required autocomplete="new-password" minlength="8">
+                    </label>
+                </div>
+
+                <label class="input-group">
+                    <span class="label">Phone (optional)</span>
+                    <input name="phone" type="tel" placeholder="+91 98765 43210" autocomplete="tel">
+                </label>
+
+                <div class="consent">
+                    <label class="checkbox">
+                        <input type="checkbox" name="agree" required>
+                        <span>I agree to the <a href="#" class="link-minor">Terms</a> & <a href="#" class="link-minor">Privacy</a></span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-primary">Create account <span class="arrow">→</span></button>
+
+                <div class="divider"><span>or continue with</span></div>
+
+                <div class="socials">
+                    <a class="btn-social google" href="{% url 'google_login' %}" title="Continue with Google">
+                        <span class="sicon">🔷</span>
+                        Continue with Google
+                    </a>
+                    <a class="btn-social email" href="{% url 'login' %}" title="Sign in with email">
+                        <span class="sicon">✉️</span>
+                        Use existing account
+                    </a>
+                </div>
+
+                <p class="footer-note">We only use your info to match items and send notifications. You can delete your account anytime.</p>
+            </form>
+        </section>
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="{% url 'found_item' %}" method="post">
+        {% csrf_token %}
+        <h2>Found Item Details</h2>
+        <label for="item_name">Item Name:</label>
+        <input type="text" id="item_name" name="item_name" required><br><br>
+
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required></textarea><br><br>
+
+        <label for="found_place">Found Place:</label>
+        <input type="text" id="found_place" name="found_place" required><br><br>
+
+        <label for="found_date">Found Date:</label>
+        <input type="date" id="found_date" name="found_date" required><br><br>
+
+        <label for="finder_name">Finder's Name:</label>
+        <input type="text" id="finder_name" name="finder_name" required><br><br>
+
+        <label for="phone_number">Phone Number:</label>
+        <input type="tel" id="phone_number" name="phone_number" required><br><br>
+
+        <button type="submit">Submit Found Item</button>
+        
+</body>
+</html>
