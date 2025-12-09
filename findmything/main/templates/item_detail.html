@@ -1,0 +1,87 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ item.item_name }} | FindMyThing</title>
+    <link rel="stylesheet" href="{% static 'item_detail.css' %}">
+    <script>
+        // Check if user came from report page
+        window.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const returnType = urlParams.get('return');
+            if (!returnType) {
+                document.querySelector('.btn-back').href = "{% if item_type == 'lost' %}{% url 'view_lost' %}{% else %}{% url 'view_found' %}{% endif %}";
+                document.querySelector('.btn-back').textContent = '← Back';
+            }
+        });
+    </script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <span class="logo-icon">🔍</span>
+            <span>FindMyThing</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{% url 'dashboard' %}" class="nav-link">Home</a></li>
+            <li><a href="{% url 'view_lost' %}" class="nav-link">Lost Items</a></li>
+            <li><a href="{% url 'view_found' %}" class="nav-link">Found Items</a></li>
+            <li><a href="{% url 'profile' %}" class="nav-link">Profile</a></li>
+        </ul>
+    </nav>
+
+    <div class="detail-container">
+        <a href="javascript:history.back()" class="btn-back">← Back to Report</a>
+        
+        <div class="detail-card">
+            <div class="detail-header">
+                <h1>{{ item.item_name }}</h1>
+                <span class="badge">{% if item_type == 'lost' %}📦 Lost{% else %}✅ Found{% endif %}</span>
+            </div>
+
+            {% if item.item_image %}
+            <div class="image-container">
+                <img src="{{ item.item_image.url }}" alt="{{ item.item_name }}" class="detail-image">
+            </div>
+            {% endif %}
+
+            <div class="detail-content">
+                <div class="info-section">
+                    <h2>Description</h2>
+                    <p>{{ item.description }}</p>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">📍 Location</span>
+                        <span class="info-value">{% if item_type == 'lost' %}{{ item.lost_place }}{% else %}{{ item.found_place }}{% endif %}</span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">📅 Date</span>
+                        <span class="info-value">{% if item_type == 'lost' %}{{ item.lost_date }}{% else %}{{ item.found_date }}{% endif %}</span>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">👤 {% if item_type == 'lost' %}Owner{% else %}Finder{% endif %}</span>
+                        <span class="info-value">{% if item_type == 'lost' %}{{ item.owner_name }}{% else %}{{ item.finder_name }}{% endif %}</span>
+                    </div>
+
+                    {% if item.phone_number %}
+                    <div class="info-item">
+                        <span class="info-label">📞 Contact</span>
+                        <span class="info-value">{{ item.phone_number }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="action-section">
+                    <a href="{% if item_type == 'lost' %}{% url 'chat_lost' item.id %}{% else %}{% url 'chat_found' item.id %}{% endif %}" class="btn-chat">💬 Start Chat</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

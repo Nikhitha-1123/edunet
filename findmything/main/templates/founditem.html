@@ -1,33 +1,315 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Report Found Item | FindMyThing</title>
+    <link rel="stylesheet" href="{% static 'lostitem.css' %}">
+    <style>
+        .success-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 50px 60px;
+            border-radius: 25px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+            z-index: 10000;
+            text-align: center;
+            animation: popIn 0.5s ease forwards;
+        }
+        @keyframes popIn {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+        .success-popup-icon {
+            font-size: 80px;
+            animation: bounce 1s ease infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        .success-popup h2 {
+            color: white;
+            font-size: 32px;
+            margin: 20px 0 10px;
+            font-weight: 900;
+        }
+        .success-popup p {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+        .success-popup-btn {
+            background: white;
+            color: #667eea;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .success-popup-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .matches-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+            overflow-y: auto;
+            padding: 40px 20px;
+        }
+        .matches-modal-content {
+            background: white;
+            border-radius: 25px;
+            padding: 40px;
+            max-width: 1200px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.5s ease;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+        }
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .matches-modal h2 {
+            font-size: 36px;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        .matches-modal-subtitle {
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        .btn-modal {
+            padding: 15px 35px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-modal-primary {
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white;
+        }
+        .btn-modal-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(106, 17, 203, 0.4);
+        }
+    </style>
+    <script>
+        // Save form data to session storage before navigating
+        document.addEventListener('DOMContentLoaded', function() {
+            const links = document.querySelectorAll('.btn-view');
+            links.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    sessionStorage.setItem('found_item_name', '{{ form_data.item_name }}');
+                    sessionStorage.setItem('found_description', '{{ form_data.description }}');
+                    sessionStorage.setItem('found_place', '{{ form_data.found_place }}');
+                    sessionStorage.setItem('found_date', '{{ form_data.found_date }}');
+                    sessionStorage.setItem('show_matches', 'true');
+                });
+            });
+
+            // Restore form and show matches if returning
+            if (sessionStorage.getItem('show_matches') === 'true') {
+                sessionStorage.removeItem('show_matches');
+                document.getElementById('item_name').value = sessionStorage.getItem('found_item_name') || '';
+                document.getElementById('description').value = sessionStorage.getItem('found_description') || '';
+                document.getElementById('found_place').value = sessionStorage.getItem('found_place') || '';
+                document.getElementById('found_date').value = sessionStorage.getItem('found_date') || '';
+                
+                // Auto-submit to show matches again
+                if (document.getElementById('item_name').value) {
+                    document.querySelector('.lost-item-form').submit();
+                }
+            }
+        });
+    </script>
 </head>
 <body>
-    <form action="{% url 'found_item' %}" method="post">
-        {% csrf_token %}
-        <h2>Found Item Details</h2>
-        <label for="item_name">Item Name:</label>
-        <input type="text" id="item_name" name="item_name" required><br><br>
+    {% if success %}
+    <div class="popup-overlay" onclick="window.location.href='{% url 'view_found' %}'"></div>
+    <div class="success-popup">
+        <div class="success-popup-icon">🎉</div>
+        <h2>Success!</h2>
+        <p>Your item has been posted successfully!<br>Someone's day just got brighter! ✨</p>
+        <button class="success-popup-btn" onclick="window.location.href='{% url 'view_found' %}'">View All Items</button>
+    </div>
+    {% endif %}
+    <nav class="navbar">
+        <div class="logo">
+            <span class="logo-icon">🔍</span>
+            <span>FindMyThing</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{% url 'dashboard' %}" class="nav-link">Home</a></li>
+            <li><a href="{% url 'view_lost' %}" class="nav-link">Lost Items</a></li>
+            <li><a href="{% url 'view_found' %}" class="nav-link">Found Items</a></li>
+            <li><a href="{% url 'profile' %}" class="nav-link">Profile</a></li>
+        </ul>
+    </nav>
+    <div class="floating-icon" style="top: 15%; left: 8%;">🎒</div>
+    <div class="floating-icon" style="top: 35%; left: 5%;">📱</div>
+    <div class="floating-icon" style="top: 60%; left: 10%;">💼</div>
+    <div class="floating-icon" style="top: 80%; left: 7%;">🎧</div>
+    <div class="floating-icon" style="top: 20%; right: 8%;">🔑</div>
+    <div class="floating-icon" style="top: 45%; right: 5%;">👓</div>
+    <div class="floating-icon" style="top: 70%; right: 10%;">⌚</div>
+    <div class="floating-icon" style="top: 85%; right: 6%;">💳</div>
+    <div class="container">
+        <div class="lost-item-box">
+            <h1>Report a Found Item</h1>
+            <p class="subtitle">Thank you for helping! Please provide the details of the item you found.</p>
 
-        <label for="description">Description:</label>
-        <textarea id="description" name="description" required></textarea><br><br>
+            <form action="{% url 'report_found' %}" method="post" class="lost-item-form" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="item_name">Item Name</label>
+                    <input type="text" id="item_name" name="item_name" placeholder="e.g., Black Wallet" required>
+                </div>
 
-        <label for="found_place">Found Place:</label>
-        <input type="text" id="found_place" name="found_place" required><br><br>
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" name="category" required>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Documents">Documents</option>
+                        <option value="Accessories">Accessories</option>
+                        <option value="Clothing">Clothing</option>
+                        <option value="Others" selected>Others</option>
+                    </select>
+                </div>
 
-        <label for="found_date">Found Date:</label>
-        <input type="date" id="found_date" name="found_date" required><br><br>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" placeholder="Provide a detailed description of the item." required></textarea>
+                </div>
 
-        <label for="finder_name">Finder's Name:</label>
-        <input type="text" id="finder_name" name="finder_name" required><br><br>
+                <div class="form-group">
+                    <label for="found_place">Found Place</label>
+                    <input type="text" id="found_place" name="found_place" placeholder="e.g., Cafeteria Table" required>
+                </div>
 
-        <label for="phone_number">Phone Number:</label>
-        <input type="tel" id="phone_number" name="phone_number" required><br><br>
+                <div class="form-group">
+                    <label for="found_date">Found Date</label>
+                    <input type="date" id="found_date" name="found_date" required>
+                </div>
 
-        <button type="submit">Submit Found Item</button>
-        
+                <div class="form-group">
+                    <label for="item_image">Item Image</label>
+                    <input type="file" id="item_image" name="item_image" accept="image/*" required>
+                </div>
+
+                <button type="submit" class="btn-submit">Submit Report</button>
+            </form>
+
+        </div>
+    </div>
+
+    {% if no_matches %}
+    <div class="matches-modal">
+        <div class="matches-modal-content">
+            <div style="text-align: center;">
+                <div style="font-size: 80px; margin-bottom: 20px;">🔍</div>
+                <h2>No Matches Found</h2>
+                <p class="matches-modal-subtitle">We couldn't find any similar items. Your item will help someone find what they're looking for!</p>
+                <form method="post" enctype="multipart/form-data" style="display: inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="item_name" value="{{ form_data.item_name }}">
+                    <input type="hidden" name="category" value="{{ form_data.category }}">
+                    <input type="hidden" name="description" value="{{ form_data.description }}">
+                    <input type="hidden" name="found_place" value="{{ form_data.found_place }}">
+                    <input type="hidden" name="found_date" value="{{ form_data.found_date }}">
+                    <input type="hidden" name="confirm_save" value="true">
+                    <button type="submit" class="btn-modal btn-modal-primary">Post My Found Item</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if matches %}
+    <div class="matches-modal">
+        <div class="matches-modal-content">
+            <h2>🎯 Possible Matches Found!</h2>
+            <p class="matches-modal-subtitle">We found {{ matches|length }} similar item(s). Please check if any of these match your item:</p>
+            
+            <div class="matches-grid">
+                {% for match_data in matches %}
+                <div class="match-card">
+                    <div class="match-badge">{{ match_data.similarity }}% Match</div>
+                    {% if match_data.item.item_image %}
+                        <img src="{{ match_data.item.item_image.url }}" alt="{{ match_data.item.item_name }}" class="match-image">
+                    {% else %}
+                        <div class="match-icon">📦</div>
+                    {% endif %}
+                    <h3>{{ match_data.item.item_name }}</h3>
+                    <p>{{ match_data.item.description|truncatewords:20 }}</p>
+                    <div class="match-details">
+                        <span>📍 {{ match_data.item.lost_place }}</span>
+                        <span>📅 {{ match_data.item.lost_date }}</span>
+                    </div>
+                    <a href="{% url 'lost_item_detail' match_data.item.id %}?return=found" class="btn-view">View Details</a>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="modal-actions">
+                <form method="post" enctype="multipart/form-data" style="display: inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="item_name" value="{{ form_data.item_name }}">
+                    <input type="hidden" name="category" value="{{ form_data.category }}">
+                    <input type="hidden" name="description" value="{{ form_data.description }}">
+                    <input type="hidden" name="found_place" value="{{ form_data.found_place }}">
+                    <input type="hidden" name="found_date" value="{{ form_data.found_date }}">
+                    <input type="hidden" name="confirm_save" value="true">
+                    <button type="submit" class="btn-modal btn-modal-primary">None Match - Post Anyway</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </body>
 </html>

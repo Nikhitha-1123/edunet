@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - {{ item.item_name }} | FindMyThing</title>
+    <link rel="stylesheet" href="{% static 'chat.css' %}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <span class="logo-icon">🔍</span>
+            <span>FindMyThing</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{% url 'dashboard' %}" class="nav-link">Home</a></li>
+            <li><a href="{% url 'view_lost' %}" class="nav-link">Lost Items</a></li>
+            <li><a href="{% url 'view_found' %}" class="nav-link">Found Items</a></li>
+            <li><a href="{% url 'profile' %}" class="nav-link">Profile</a></li>
+        </ul>
+    </nav>
+
+    <div class="chat-container">
+        <div class="chat-header">
+            <a href="{% if item_type == 'lost' %}{% url 'lost_item_detail' item.id %}{% else %}{% url 'found_item_detail' item.id %}{% endif %}" class="btn-back">← Back</a>
+            <div class="chat-title">
+                <h1>💬 Chat about: {{ item.item_name }}</h1>
+                <p>{% if item_type == 'lost' %}Lost at {{ item.lost_place }}{% else %}Found at {{ item.found_place }}{% endif %}</p>
+            </div>
+        </div>
+
+        <div class="chat-box">
+            <div class="messages-container" id="messagesContainer">
+                {% if messages %}
+                    {% for msg in messages %}
+                    <div class="message {% if msg.sender == request.user %}sent{% else %}received{% endif %}">
+                        <div class="message-header">
+                            <span class="sender-name">{% if msg.sender == request.user %}You{% else %}{{ msg.sender.first_name|default:"User" }}{% endif %}</span>
+                            <span class="timestamp">{{ msg.timestamp|date:"M d, Y H:i" }}</span>
+                        </div>
+                        <div class="message-text">{{ msg.message }}</div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="no-messages">
+                        <div class="no-msg-icon">💬</div>
+                        <p>No messages yet. Start the conversation!</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <form method="post" class="message-form">
+                {% csrf_token %}
+                <input type="text" name="message" placeholder="Type your message..." required class="message-input" autocomplete="off">
+                <button type="submit" class="btn-send">Send</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const container = document.getElementById('messagesContainer');
+        container.scrollTop = container.scrollHeight;
+    </script>
+</body>
+</html>

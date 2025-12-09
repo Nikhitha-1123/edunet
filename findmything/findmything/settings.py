@@ -120,13 +120,20 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTHENTICATION_BACKENDS = [
+    'main.backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com'
 GOOGLE_CLIENT_SECRET = 'YOUR_GOOGLE_CLIENT_SECRET'
-# ...existing code...
 LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'home'   # where users go after login (adjust if needed)
-# ...existing code...
+LOGIN_REDIRECT_URL = 'home'

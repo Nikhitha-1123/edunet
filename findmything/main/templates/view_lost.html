@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lost Items | FindMyThing</title>
+    <link rel="stylesheet" href="{% static 'view_items.css' %}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <span class="logo-icon">🔍</span>
+            <span>FindMyThing</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{% url 'dashboard' %}" class="nav-link">Home</a></li>
+            <li><a href="{% url 'view_lost' %}" class="nav-link active">Lost Items</a></li>
+            <li><a href="{% url 'view_found' %}" class="nav-link">Found Items</a></li>
+            <li><a href="{% url 'profile' %}" class="nav-link">Profile</a></li>
+        </ul>
+    </nav>
+
+    <div class="page-container">
+        <div class="page-header">
+            <h1>📦 Lost Items</h1>
+            <p>Help reunite these items with their owners</p>
+            <a href="{% url 'report_lost' %}" class="btn-report">+ Report Lost Item</a>
+        </div>
+
+        <form method="get" class="search-form">
+            <input type="text" name="q" placeholder="Search by name..." value="{{ request.GET.q }}">
+            <input type="text" name="location" placeholder="Location..." value="{{ request.GET.location }}">
+            <input type="date" name="date" placeholder="Date" value="{{ request.GET.date }}">
+            <button type="submit">🔍 Search</button>
+            <a href="{% url 'view_lost' %}" class="btn-clear">Clear</a>
+        </form>
+
+        <div class="items-grid">
+            {% if lost_items %}
+                {% for item in lost_items %}
+                <a href="{% url 'lost_item_detail' item.id %}" class="item-card-link">
+                <div class="item-card">
+                    {% if item.item_image %}
+                        <img src="{{ item.item_image.url }}" alt="{{ item.item_name }}" class="item-image">
+                    {% else %}
+                        <div class="item-icon">📦</div>
+                    {% endif %}
+                    <h3>{{ item.item_name }}</h3>
+                    <p class="item-desc">{{ item.description }}</p>
+                    <div class="item-details">
+                        <div class="detail-row">
+                            <span class="label">📍 Location:</span>
+                            <span class="value">{{ item.lost_place }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">📅 Date:</span>
+                            <span class="value">{{ item.lost_date }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">👤 Owner:</span>
+                            <span class="value">{{ item.owner_name }}</span>
+                        </div>
+                    </div>
+                </div>
+                </a>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">🔍</div>
+                    <h2>No Lost Items</h2>
+                    <p>There are no lost items reported yet.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

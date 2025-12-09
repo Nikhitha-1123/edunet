@@ -1,0 +1,80 @@
+<div class="language-selector">
+    <button class="lang-btn" onclick="translatePage('en')">🇬🇧 EN</button>
+    <button class="lang-btn" onclick="translatePage('es')">🇪🇸 ES</button>
+    <button class="lang-btn" onclick="translatePage('hi')">🇮🇳 HI</button>
+    <button class="lang-btn" onclick="translatePage('te')">తె TE</button>
+</div>
+
+<script>
+function translatePage(lang) {
+    const translations = {
+        'en': {
+            'Home': 'Home',
+            'Lost Items': 'Lost Items',
+            'Found Items': 'Found Items',
+            'About': 'About',
+            'Profile': 'Profile'
+        },
+        'es': {
+            'Home': 'Inicio',
+            'Lost Items': 'Artículos Perdidos',
+            'Found Items': 'Artículos Encontrados',
+            'About': 'Acerca de',
+            'Profile': 'Perfil'
+        },
+        'hi': {
+            'Home': 'होम',
+            'Lost Items': 'खोई वस्तुएं',
+            'Found Items': 'मिली वस्तुएं',
+            'About': 'के बारे में',
+            'Profile': 'प्रोफ़ाइल'
+        },
+        'te': {
+            'Home': 'హోమ్',
+            'Lost Items': 'కోల్పోయిన వస్తువులు',
+            'Found Items': 'దొరికిన వస్తువులు',
+            'About': 'గురించి',
+            'Profile': 'ప్రొఫైల్'
+        }
+    };
+    
+    document.querySelectorAll('[data-translate]').forEach(el => {
+        const key = el.getAttribute('data-translate');
+        if (translations[lang] && translations[lang][key]) {
+            el.textContent = translations[lang][key];
+        }
+    });
+    
+    localStorage.setItem('preferredLanguage', lang);
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    const savedLang = localStorage.getItem('preferredLanguage') || 'en';
+    translatePage(savedLang);
+});
+</script>
+
+<style>
+.language-selector {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.lang-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.lang-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+</style>

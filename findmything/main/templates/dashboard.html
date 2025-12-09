@@ -16,12 +16,28 @@
             <span>FindMyThing</span>
         </div>
         <ul class="nav-links">
-            <li><a href="#" class="nav-link">Lost Items</a></li>
-            <li><a href="#" class="nav-link">Found Items</a></li>
-            <li><a href="#" class="nav-link">About</a></li>
+            <li><a href="{% url 'view_lost' %}" class="nav-link">Lost Items</a></li>
+            <li><a href="{% url 'view_found' %}" class="nav-link">Found Items</a></li>
+            <li><a href="#about" class="nav-link">About</a></li>
+            <li class="notif-wrapper">
+                <button class="notif-bell" onclick="toggleNotifications()">
+                    🔔
+                    {% if notifications %}
+                    <span class="notif-badge">{{ notifications|length }}</span>
+                    {% endif %}
+                </button>
+                <div class="notif-dropdown" id="notifDropdown">
+                    {% if notifications %}
+                        {% for notif in notifications %}
+                        <a href="{{ notif.link }}" class="notif-item">{{ notif.message }}</a>
+                        {% endfor %}
+                    {% else %}
+                        <div class="no-notif">No new notifications</div>
+                    {% endif %}
+                </div>
+            </li>
             {% if user.is_authenticated %}
-                <li><a href="{% url 'logout' %}" class="nav-link login-btn">Logout</a></li>
-                <li><a href="#" class="nav-link signup-btn">Profile</a></li>
+                <li><a href="{% url 'profile' %}" class="nav-link signup-btn" data-translate="Profile">Profile</a></li>
             {% else %}
                 <li><a href="{% url 'login' %}" class="nav-link login-btn">Login</a></li>
                 <li><a href="{% url 'signup' %}" class="nav-link signup-btn">Signup</a></li>
@@ -33,11 +49,11 @@
     <section class="hero">
         <div class="hero-content">
             <div class="hero-text">
-                <h1 class="hero-title">Lost Something? <br> <span class="gradient-text">We'll Help You Find It!</span></h1>
+                <h1 class="hero-title">Lost Your Precious Item? <br> <span class="gradient-text">Don't Worry, We've Got Your Back!</span></h1>
                 <p class="hero-description">
-                    FindMyThing is a smart Lost & Found platform that helps people 
-                    find their missing belongings within your college or local area.
-                    Report lost or found items and get instant alerts.
+                    Every lost item has a story. Whether it's your favorite book, lucky charm, or daily essential - 
+                    we connect honest finders with worried owners. Join our community where kindness meets technology, 
+                    and lost items find their way home. Because losing something shouldn't mean losing hope!
                 </p>
 
                 <div class="hero-buttons">
@@ -79,6 +95,103 @@
         </div>
     </section>
 
+    <!-- About Section -->
+    <section class="about-section" id="about">
+        <div class="about-container">
+            <div class="about-header">
+                <h2 class="about-title">About <span class="gradient-text">FindMyThing</span></h2>
+                <p class="about-tagline">Reuniting People with Their Lost Belongings</p>
+            </div>
+            
+            <div class="about-content">
+                <div class="about-card">
+                    <div class="card-icon">🎯</div>
+                    <h3>Our Mission</h3>
+                    <p>We believe every lost item has a story and deserves to find its way back home. FindMyThing bridges the gap between those who lose and those who find.</p>
+                </div>
+                
+                <div class="about-card">
+                    <div class="card-icon">⚡</div>
+                    <h3>Lightning Fast</h3>
+                    <p>Report lost or found items in seconds. Our smart matching system instantly connects you with potential matches in your area.</p>
+                </div>
+                
+                <div class="about-card">
+                    <div class="card-icon">🤝</div>
+                    <h3>Community Driven</h3>
+                    <p>Join thousands of helpful people making a difference. Together, we're building a community where honesty and kindness prevail.</p>
+                </div>
+                
+                <div class="about-card">
+                    <div class="card-icon">🔒</div>
+                    <h3>Safe & Secure</h3>
+                    <p>Your privacy matters. We protect your personal information while facilitating safe connections between finders and owners.</p>
+                </div>
+            </div>
+            
+            <div class="stats-section">
+                <div class="stat-item">
+                    <div class="stat-number">1000+</div>
+                    <div class="stat-label">Items Reunited</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">Active Users</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">95%</div>
+                    <div class="stat-label">Success Rate</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Success Stories -->
+    <section class="success-section">
+        <div class="success-container">
+            <h2 class="success-title">💝 Happy Reunions</h2>
+            <p class="success-subtitle">Real stories from our community</p>
+            
+            <div class="stories-grid">
+                <div class="story-card">
+                    <div class="story-icon">📚</div>
+                    <h3>"Got my textbook back!"</h3>
+                    <p>"Lost my engineering book before exams. Found it within 2 hours thanks to this platform. Lifesaver!"</p>
+                    <div class="story-meta">- Priya, Student</div>
+                </div>
+                
+                <div class="story-card">
+                    <div class="story-icon">🎒</div>
+                    <h3>"Reunited with my bag"</h3>
+                    <p>"Left my backpack in the library. Someone posted it here and I got it back with everything intact!"</p>
+                    <div class="story-meta">- Rahul, Student</div>
+                </div>
+                
+                <div class="story-card">
+                    <div class="story-icon">💍</div>
+                    <h3>"Found my lucky charm"</h3>
+                    <p>"My grandmother's ring was lost. This community helped me find it. Forever grateful!"</p>
+                    <div class="story-meta">- Sneha, Faculty</div>
+                </div>
+            </div>
+            
+            <div class="stats-highlight">
+                <div class="stat-box">
+                    <div class="stat-num">500+</div>
+                    <div class="stat-text">Items Reunited</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-num">24hrs</div>
+                    <div class="stat-text">Avg Recovery Time</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-num">98%</div>
+                    <div class="stat-text">Happy Users</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Login Modal -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
@@ -107,6 +220,20 @@
         window.onclick = function(event) {
             if (event.target === modal) {
                 modal.style.display = 'none';
+            }
+        }
+
+        function toggleNotifications() {
+            const dropdown = document.getElementById('notifDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.notif-bell')) {
+                const dropdown = document.getElementById('notifDropdown');
+                if (dropdown && dropdown.classList.contains('show')) {
+                    dropdown.classList.remove('show');
+                }
             }
         }
     </script>

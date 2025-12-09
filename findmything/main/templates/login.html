@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FindMyThing | Login</title>
     <link rel="stylesheet" href="{% static 'login.css' %}">
+    <script>
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+    </script>
 </head>
 <body>
 
@@ -45,7 +50,7 @@
                     <h1>Welcome Back</h1>
                     <p class="form-subtitle">Sign in to your account</p>
 
-                    <form action="" method="post" class="login-form">
+                    <form action="" method="post" class="login-form" autocomplete="off">
                         {% csrf_token %}
 
                         <div class="form-group">
@@ -60,6 +65,8 @@
                                 placeholder="you@example.com" 
                                 required
                                 class="form-input"
+                                autocomplete="off"
+                                value=""
                             >
                             <div class="input-focus"></div>
                         </div>
@@ -76,6 +83,8 @@
                                 placeholder="Enter your password" 
                                 required
                                 class="form-input"
+                                autocomplete="off"
+                                value=""
                             >
                             <div class="input-focus"></div>
                         </div>
@@ -98,12 +107,10 @@
                         <span>OR</span>
                     </div>
 
-                     <button class="btn-google">
-+                    <a href="{% url 'google_login' %}" class="btn-google">
-                         <span class="google-icon">🔷</span>
-                         Continue with Google
--                    </button>
-+                    </a>
+                    <a href="{% url 'google_login' %}" class="btn-google">
+                        <span class="google-icon">🔷</span>
+                        Continue with Google
+                    </a>
 
                     <div class="signup-link">
                         <p>Don't have an account? 
@@ -115,5 +122,10 @@
         </div>
     </main>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('.login-form').reset();
+        });
+    </script>
 </body>
 </html>

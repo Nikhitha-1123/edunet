@@ -1,0 +1,152 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile | FindMyThing</title>
+    <link rel="stylesheet" href="{% static 'profile.css' %}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <span class="logo-icon">🔍</span>
+            <span>FindMyThing</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{% url 'dashboard' %}" class="nav-link">Home</a></li>
+            <li><a href="{% url 'view_lost' %}" class="nav-link">Lost Items</a></li>
+            <li><a href="{% url 'view_found' %}" class="nav-link">Found Items</a></li>
+            <li><a href="{% url 'profile' %}" class="nav-link active">Profile</a></li>
+        </ul>
+    </nav>
+    <div class="floating-icon">👤</div>
+    <div class="floating-icon">📧</div>
+    <div class="floating-icon">📞</div>
+    <div class="floating-icon">🎨</div>
+    <div class="floating-icon">⚙️</div>
+    <div class="floating-icon">🔔</div>
+    
+    <div class="profile-container">
+        <div class="profile-header">
+            <div class="profile-pic-section">
+                <div class="profile-pic-wrapper">
+                    {% if profile.profile_picture %}
+                        <img src="{{ profile.profile_picture.url }}" alt="Profile" class="profile-pic" id="profileImage">
+                    {% else %}
+                        <div class="profile-icon" id="profileIcon">👤</div>
+                    {% endif %}
+                </div>
+                <div class="pic-actions">
+                    <form method="post" enctype="multipart/form-data" id="uploadForm" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="file" id="profile_picture" name="profile_picture" accept="image/*" style="display:none;" onchange="this.form.submit()">
+                        <button type="button" class="btn-pic" onclick="document.getElementById('profile_picture').click()">📷 Upload</button>
+                    </form>
+                    {% if profile.profile_picture %}
+                    <form method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="delete_picture" value="true">
+                        <button type="submit" class="btn-pic btn-delete">🗑️ Delete</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="profile-info-section">
+                <h1>{{ user.first_name|default:user.username }}</h1>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <span class="info-icon">📧</span>
+                        <div class="info-content">
+                            <label>Email</label>
+                            <p>{{ user.email }}</p>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-icon">👤</span>
+                        <div class="info-content">
+                            <label>Username</label>
+                            <p>{{ user.username }}</p>
+                        </div>
+                    </div>
+                    <div class="info-card editable">
+                        <span class="info-icon">📞</span>
+                        <div class="info-content">
+                            <label>Phone <span class="edit-badge">✏️ Editable</span></label>
+                            <form method="post" class="inline-form">
+                                {% csrf_token %}
+                                <input type="text" name="phone" value="{{ profile.phone }}" placeholder="Add phone number" class="edit-input">
+                                <button type="submit" class="btn-edit">💾</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="profile-actions">
+                <a href="{% url 'dashboard' %}" class="btn-back">← Back to Dashboard</a>
+                <a href="{% url 'logout' %}" class="btn-logout">Logout</a>
+            </div>
+        </div>
+
+        <div class="profile-content">
+            <div class="section">
+                <h2>📦 My Lost Items ({{ lost_items.count }})</h2>
+                {% if lost_items %}
+                    <div class="items-grid">
+                        {% for item in lost_items %}
+                        <div class="item-card {% if item.is_reunited %}reunited{% endif %}">
+                            {% if item.is_reunited %}<div class="reunited-badge">✅ Reunited</div>{% endif %}
+                            <h3>{{ item.item_name }}</h3>
+                            <p>{{ item.description }}</p>
+                            <div class="item-meta">
+                                <span>📍 {{ item.lost_place }}</span>
+                                <span>📅 {{ item.lost_date }}</span>
+                            </div>
+                            <div class="item-actions">
+                                {% if not item.is_reunited %}
+                                <a href="{% url 'mark_lost_reunited' item.id %}" class="btn-action btn-reunited" onclick="return confirm('Mark this item as reunited?')">🎉 Mark as Reunited</a>
+                                <a href="{% url 'edit_lost' item.id %}" class="btn-action btn-edit">✏️ Edit</a>
+                                {% endif %}
+                                <a href="{% url 'delete_lost' item.id %}" class="btn-action btn-delete" onclick="return confirm('Delete this item?')">🗑️ Delete</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="empty">No lost items reported yet.</p>
+                {% endif %}
+            </div>
+
+            <div class="section">
+                <h2>✅ My Found Items ({{ found_items.count }})</h2>
+                {% if found_items %}
+                    <div class="items-grid">
+                        {% for item in found_items %}
+                        <div class="item-card {% if item.is_reunited %}reunited{% endif %}">
+                            {% if item.is_reunited %}<div class="reunited-badge">✅ Reunited</div>{% endif %}
+                            <h3>{{ item.item_name }}</h3>
+                            <p>{{ item.description }}</p>
+                            <div class="item-meta">
+                                <span>📍 {{ item.found_place }}</span>
+                                <span>📅 {{ item.found_date }}</span>
+                            </div>
+                            <div class="item-actions">
+                                {% if not item.is_reunited %}
+                                <a href="{% url 'mark_found_reunited' item.id %}" class="btn-action btn-reunited" onclick="return confirm('Mark this item as reunited?')">🎉 Mark as Reunited</a>
+                                <a href="{% url 'edit_found' item.id %}" class="btn-action btn-edit">✏️ Edit</a>
+                                {% endif %}
+                                <a href="{% url 'delete_found' item.id %}" class="btn-action btn-delete" onclick="return confirm('Delete this item?')">🗑️ Delete</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="empty">No found items reported yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>
