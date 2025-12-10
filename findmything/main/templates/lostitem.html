@@ -153,7 +153,7 @@
                 });
             });
 
-            // Restore form and show matches if returning
+            // Restore form data if returning from view details
             if (sessionStorage.getItem('show_matches') === 'true') {
                 sessionStorage.removeItem('show_matches');
                 document.getElementById('item_name').value = sessionStorage.getItem('lost_item_name') || '';
@@ -161,10 +161,7 @@
                 document.getElementById('lost_place').value = sessionStorage.getItem('lost_place') || '';
                 document.getElementById('lost_date').value = sessionStorage.getItem('lost_date') || '';
                 
-                // Auto-submit to show matches again
-                if (document.getElementById('item_name').value) {
-                    document.querySelector('.lost-item-form').submit();
-                }
+                // Don't auto-submit - let user decide to post or modify
             }
         });
     </script>

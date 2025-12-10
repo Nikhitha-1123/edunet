@@ -163,7 +163,7 @@
                 });
             });
 
-            // Restore form and show matches if returning
+            // Restore form data if returning from view details
             if (sessionStorage.getItem('show_found_matches') === 'true') {
                 sessionStorage.removeItem('show_found_matches');
                 document.getElementById('item_name').value = sessionStorage.getItem('found_item_name') || '';
@@ -172,10 +172,7 @@
                 document.getElementById('found_date').value = sessionStorage.getItem('found_date') || '';
                 document.getElementById('category').value = sessionStorage.getItem('found_category') || 'Others';
                 
-                // Auto-submit to show matches again
-                if (document.getElementById('item_name').value) {
-                    document.querySelector('.lost-item-form').submit();
-                }
+                // Don't auto-submit - let user decide to post or modify
             }
             
             // Also restore form data from template if available
