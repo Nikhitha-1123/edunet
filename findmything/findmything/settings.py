@@ -134,7 +134,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 # Google OAuth Settings
-GOOGLE_CLIENT_ID = '1234567890-abcdefghijklmnopqrstuvwxyz.apps.googleusercontent.com'
-GOOGLE_CLIENT_SECRET = 'GOCSPX-abcdefghijklmnopqrstuvwxyz'
+GOOGLE_CLIENT_ID = '1027384756-abc123def456ghi789jkl012mno345pqr.apps.googleusercontent.com'
+GOOGLE_CLIENT_SECRET = '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5o6p'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
