@@ -178,9 +178,6 @@ Ensure the `media/` directory has proper permissions for file uploads:
 4. Push to the branch (`git push origin feature/new-feature`)
 5. Create a Pull Request
 
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Support
 
