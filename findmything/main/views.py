@@ -88,9 +88,11 @@ def logout_view(request):
 def google_login(request):
     """Initiate Google OAuth login"""
     client_id = getattr(settings, 'GOOGLE_CLIENT_ID', None)
-    if not client_id:
-        logger.error("GOOGLE_CLIENT_ID missing in settings")
-        return HttpResponse("Google OAuth not configured.", status=500)
+    if not client_id or client_id.startswith('YOUR_') or client_id.startswith('1234567890'):
+        # Redirect to signup with message for development
+        return render(request, 'signup.html', {
+            'error': 'Google OAuth is not configured yet. Please use email signup or contact admin.'
+        })
 
     state = secrets.token_urlsafe(16)
     request.session['google_oauth_state'] = state

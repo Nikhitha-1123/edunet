@@ -35,6 +35,12 @@
             <h2 id="signup-heading">Create your account</h2>
             <p class="subtitle">Join your community — report lost/found items and get alerts.</p>
 
+            {% if error %}
+            <div class="error-message" style="background: #fee; border: 1px solid #fcc; color: #c33; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                {{ error }}
+            </div>
+            {% endif %}
+            
             <form method="post" class="signup-form" novalidate>
                 {% csrf_token %}
 
